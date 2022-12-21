@@ -1,0 +1,5 @@
+node_modules/
+docs/
+coverage/
+vite.config.ts
+tsconfig.eslint.json
