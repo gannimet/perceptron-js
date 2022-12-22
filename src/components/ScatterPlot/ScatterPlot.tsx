@@ -13,9 +13,17 @@ import './ScatterPlot.scss';
 import { ScatterPlotProps } from './ScatterPlot.types';
 
 const ScatterPlot = React.memo<ScatterPlotProps>(
-  ({ classAPoints, classBPoints }) => {
-    const { plotWidth, plotHeight, axisColor, gridColor, backgroundColor } =
-      GRID_CONFIG;
+  ({ classAPoints, classBPoints, functionParams }) => {
+    const {
+      plotWidth,
+      plotHeight,
+      axisColor,
+      gridColor,
+      backgroundColor,
+      delimiterLineColor,
+      xMin,
+      xMax,
+    } = GRID_CONFIG;
     const gridXCoords = useMemo(() => getXCoordsOfVerticalGridLines(), []);
     const yAxesXCoord = useMemo(
       () => translateCartesianXCoordToCanvasXCoord(0),
@@ -91,12 +99,36 @@ const ScatterPlot = React.memo<ScatterPlotProps>(
       );
     };
 
+    const renderFunctionLine = () => {
+      if (!functionParams) {
+        return null;
+      }
+
+      const p1 = translateCartesianPointToCanvasCoords({
+        x: xMin,
+        y: functionParams.m * xMin + functionParams.n,
+      });
+      const p2 = translateCartesianPointToCanvasCoords({
+        x: xMax,
+        y: functionParams.m * xMax + functionParams.n,
+      });
+
+      return (
+        <Line
+          points={[p1.x, p1.y, p2.x, p2.y]}
+          stroke={delimiterLineColor}
+          strokeWidth={1}
+        />
+      );
+    };
+
     return (
       <div className="scatter-plot">
         <Stage width={plotWidth} height={plotHeight}>
           <Layer>
             <Group>
               {renderBaseGrid()}
+              {renderFunctionLine()}
 
               {classAPoints.map((point) => renderPoint(point, 'A'))}
               {classBPoints.map((point) => renderPoint(point, 'B'))}

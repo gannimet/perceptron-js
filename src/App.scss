@@ -1,1 +1,18 @@
+.perceptron-app {
+  &__content {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
 
+    &__plot {
+      flex-basis: 300px;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+
+    &__table {
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+  }
+}

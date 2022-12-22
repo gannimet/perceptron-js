@@ -1,5 +1,5 @@
 import { GRID_CONFIG } from '../config/constants';
-import { Point } from '../model/types';
+import { NeuronActivation, Point } from '../model/types';
 
 const { plotWidth, plotHeight, xMin, xMax, yMin, yMax, gridStep } = GRID_CONFIG;
 
@@ -62,4 +62,8 @@ export const getYCoordsOfHorizontalGridLines = (): number[] => {
 
     return result;
   });
+};
+
+export const heaviside = (s: number): NeuronActivation => {
+  return s > 0 ? 1 : 0;
 };

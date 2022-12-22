@@ -1,0 +1,25 @@
+.iterations-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  &__head {
+    border-bottom: 1px solid black;
+
+    th {
+      width: calc(100% / 12);
+      text-align: center;
+      padding: 4px;
+    }
+  }
+
+  &__body {
+    border-bottom: 1px solid black;
+
+    tr {
+      td {
+        text-align: center;
+        padding: 4px;
+      }
+    }
+  }
+}
