@@ -3,31 +3,20 @@ import './App.scss';
 import IterationsTable from './components/IterationsTable/IterationsTable';
 import ScatterPlot from './components/ScatterPlot/ScatterPlot';
 import { Perceptron, PerceptronIteration } from './model/Perceptron';
-import { LinearFunctionParams, Point } from './model/types';
+import { LinearFunctionParams, Point, PointClass } from './model/types';
 import { heaviside } from './util/math.utils';
 
 function App() {
-  const [classAPoints] = useState<Point[]>([
-    { x: -3, y: 5 },
-    { x: 12, y: 9 },
-    { x: -9, y: 10 },
-    { x: 16, y: 4 },
-    { x: -10, y: -8 },
-  ]);
-  const [classBPoints] = useState<Point[]>([
-    { x: 14, y: -12 },
-    { x: 16, y: -11 },
-    { x: -7, y: -9 },
-    { x: -18, y: -18 },
-    { x: 1, y: -10 },
-  ]);
   const perceptron = useMemo(() => {
     return new Perceptron(0, 0, 0, 1, heaviside);
   }, []);
+  const [classAPoints, setClassAPoints] = useState<Point[]>([]);
+  const [classBPoints, setClassBPoints] = useState<Point[]>([]);
   const [iterations, setIterations] = useState<PerceptronIteration[]>([]);
   const [functionParams, setFunctionParams] = useState<
     LinearFunctionParams | undefined
   >();
+  const [activePointClass, setActivePointClass] = useState<PointClass>('A');
 
   const trainButtonClicked = () => {
     perceptron.startNewIteration();
@@ -44,17 +33,57 @@ function App() {
     setFunctionParams(perceptron.getCurrentLinearFunctionParamsGuess());
   };
 
+  const clearPointsButtonClicked = () => {
+    setClassAPoints([]);
+    setClassBPoints([]);
+  };
+
+  const gridClicked = (point: Point) => {
+    if (activePointClass === 'A') {
+      setClassAPoints((oldList) => {
+        return [...oldList, point];
+      });
+
+      setActivePointClass('B');
+    } else {
+      setClassBPoints((oldList) => {
+        return [...oldList, point];
+      });
+
+      setActivePointClass('A');
+    }
+  };
+
   return (
     <div className="perceptron-app">
       <div className="perceptron-app__content">
         <div className="perceptron-app__content__plot">
           <section>
+            <div className="perceptron-app__content__plot__meta">
+              <div
+                className={`perceptron-app__content__plot__meta__active-class ${
+                  activePointClass === 'A'
+                    ? 'perceptron-app__content__plot__meta__active-class--a'
+                    : 'perceptron-app__content__plot__meta__active-class--b'
+                }`}
+              >
+                Next point: {activePointClass}
+              </div>
+            </div>
+
             <ScatterPlot
               classAPoints={classAPoints}
               classBPoints={classBPoints}
               functionParams={functionParams}
+              onClick={gridClicked}
             />
-            <button onClick={trainButtonClicked}>Train</button>
+
+            <div className="perceptron-app__content__plot__buttons">
+              <button onClick={trainButtonClicked}>
+                Execute training iteration
+              </button>
+              <button onClick={clearPointsButtonClicked}>Clear points</button>
+            </div>
           </section>
           {functionParams && (
             <section>

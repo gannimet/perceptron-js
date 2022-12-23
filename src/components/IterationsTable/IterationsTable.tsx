@@ -33,12 +33,32 @@ const IterationsTable = React.memo<IterationsTableProps>(({ iterations }) => {
             <td>{iterationRow.bias}</td>
             <td>{iterationRow.w0}</td>
             <td>{iterationRow.w1}</td>
-            <td>{iterationRow.point.x}</td>
-            <td>{iterationRow.point.y}</td>
+            <td
+              className={`input-cell ${
+                iterationRow.desired === 0 ? 'input-cell--a' : 'input-cell--b'
+              }`}
+            >
+              {iterationRow.point.x}
+            </td>
+            <td
+              className={`input-cell ${
+                iterationRow.desired === 0 ? 'input-cell--a' : 'input-cell--b'
+              }`}
+            >
+              {iterationRow.point.y}
+            </td>
             <td>{iterationRow.desired}</td>
             <td>{iterationRow.weightedSum}</td>
             <td>{iterationRow.activation}</td>
-            <td>{iterationRow.error}</td>
+            <td
+              className={`error-cell ${
+                iterationRow.error === 0
+                  ? 'error-cell--green'
+                  : 'error-cell--red'
+              }`}
+            >
+              {iterationRow.error}
+            </td>
             <td>{iterationRow.deltaBias}</td>
             <td>{iterationRow.deltaW0}</td>
             <td>{iterationRow.deltaW1}</td>

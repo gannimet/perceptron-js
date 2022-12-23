@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import {
   LinearFunctionParams,
   NeuronActivation,
@@ -107,7 +106,7 @@ export class PerceptronIteration {
   iterationRows: PerceptronIterationRow[] = [];
 
   constructor() {
-    this.id = uuidv4();
+    this.id = crypto.randomUUID();
   }
 
   addRow(iterationRow: PerceptronIterationRow) {
@@ -132,6 +131,6 @@ export class PerceptronIterationRow {
     public deltaW0: number,
     public deltaW1: number,
   ) {
-    this.id = uuidv4();
+    this.id = crypto.randomUUID();
   }
 }

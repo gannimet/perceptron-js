@@ -1,6 +1,7 @@
 .iterations-table {
   width: 100%;
   border-collapse: collapse;
+  position: relative;
 
   &__head {
     border-bottom: 1px solid black;
@@ -9,6 +10,9 @@
       width: calc(100% / 12);
       text-align: center;
       padding: 4px;
+      position: sticky;
+      top: 0;
+      background-color: #fff;
     }
   }
 
@@ -19,6 +23,26 @@
       td {
         text-align: center;
         padding: 4px;
+
+        &.error-cell {
+          &--green {
+            background-color: greenyellow;
+          }
+
+          &--red {
+            background-color: lightcoral;
+          }
+        }
+
+        &.input-cell {
+          &--a {
+            background-color: rgb(254, 196, 197);
+          }
+
+          &--b {
+            background-color: rgb(178, 220, 255);
+          }
+        }
       }
     }
   }

@@ -5,6 +5,7 @@ import { Point, PointClass } from '../../model/types';
 import {
   getXCoordsOfVerticalGridLines,
   getYCoordsOfHorizontalGridLines,
+  translateCanvasPointToCartesianPoint,
   translateCartesianPointToCanvasCoords,
   translateCartesianXCoordToCanvasXCoord,
   translateCartesianYCoordToCanvasYCoord,
@@ -13,7 +14,7 @@ import './ScatterPlot.scss';
 import { ScatterPlotProps } from './ScatterPlot.types';
 
 const ScatterPlot = React.memo<ScatterPlotProps>(
-  ({ classAPoints, classBPoints, functionParams }) => {
+  ({ classAPoints, classBPoints, functionParams, onClick }) => {
     const {
       plotWidth,
       plotHeight,
@@ -122,11 +123,31 @@ const ScatterPlot = React.memo<ScatterPlotProps>(
       );
     };
 
+    const canvasClicked = (event: { evt: MouseEvent }) => {
+      if (!onClick) {
+        return;
+      }
+
+      const canvasPoint: Point = {
+        x: event.evt.offsetX,
+        y: event.evt.offsetY,
+      };
+      const { x: cartesianX, y: cartesianY } =
+        translateCanvasPointToCartesianPoint(canvasPoint);
+
+      const roundedCartesianPoint: Point = {
+        x: Math.round(cartesianX),
+        y: Math.round(cartesianY),
+      };
+
+      onClick(roundedCartesianPoint);
+    };
+
     return (
       <div className="scatter-plot">
         <Stage width={plotWidth} height={plotHeight}>
           <Layer>
-            <Group>
+            <Group onClick={canvasClicked}>
               {renderBaseGrid()}
               {renderFunctionLine()}
 

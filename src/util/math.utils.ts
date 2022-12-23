@@ -26,6 +26,29 @@ export const translateCartesianYCoordToCanvasYCoord = (
   return (plotHeight / cartesianHeight) * (yMax - cartesianY);
 };
 
+export const translateCanvasPointToCartesianPoint = (point: Point): Point => {
+  return {
+    x: translateCanvasXCoordToCartesianXCoord(point.x),
+    y: translateCanvasYCoordToCartesianYCoord(point.y),
+  };
+};
+
+export const translateCanvasXCoordToCartesianXCoord = (
+  canvasX: number,
+): number => {
+  const cartesianWidth = xMax - xMin;
+
+  return (canvasX * cartesianWidth) / plotWidth + xMin;
+};
+
+export const translateCanvasYCoordToCartesianYCoord = (
+  canvasY: number,
+): number => {
+  const cartesianHeight = yMax - yMin;
+
+  return yMax - (canvasY * cartesianHeight) / plotHeight;
+};
+
 export const getXCoordsOfVerticalGridLines = (): number[] => {
   const cartesianCoords: number[] = [];
 

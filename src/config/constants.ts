@@ -4,10 +4,10 @@ export const GRID_CONFIG = {
   yMin: -20,
   yMax: 20,
   gridStep: 1,
-  plotWidth: 300,
-  plotHeight: 300,
+  plotWidth: 400,
+  plotHeight: 400,
   axisColor: '#000',
   gridColor: '#ddd',
   backgroundColor: '#fff',
-  delimiterLineColor: '#0f0',
+  delimiterLineColor: '#2d8',
 };
