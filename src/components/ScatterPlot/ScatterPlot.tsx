@@ -22,8 +22,10 @@ const ScatterPlot = React.memo<ScatterPlotProps>(
       gridColor,
       backgroundColor,
       delimiterLineColor,
+      delimiterLineWidth,
       xMin,
       xMax,
+      pointWidth,
     } = GRID_CONFIG;
     const gridXCoords = useMemo(() => getXCoordsOfVerticalGridLines(), []);
     const yAxesXCoord = useMemo(
@@ -93,7 +95,7 @@ const ScatterPlot = React.memo<ScatterPlotProps>(
           key={`${point.x}_${point.y}`}
           x={canvasCoords.x}
           y={canvasCoords.y}
-          radius={2}
+          radius={pointWidth}
           strokeWidth={0}
           fill={clazz === 'A' ? 'red' : 'blue'}
         />
@@ -118,7 +120,7 @@ const ScatterPlot = React.memo<ScatterPlotProps>(
         <Line
           points={[p1.x, p1.y, p2.x, p2.y]}
           stroke={delimiterLineColor}
-          strokeWidth={1}
+          strokeWidth={delimiterLineWidth}
         />
       );
     };

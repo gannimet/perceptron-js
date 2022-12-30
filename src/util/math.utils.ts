@@ -87,6 +87,41 @@ export const getYCoordsOfHorizontalGridLines = (): number[] => {
   });
 };
 
+export const rounded = (n: number): number => {
+  return Math.round((n + Number.EPSILON) * 100) / 100;
+};
+
 export const heaviside = (s: number): NeuronActivation => {
   return s > 0 ? 1 : 0;
+};
+
+export const getWeightColorValue = (
+  weightValue: number,
+  channel: 'r' | 'g' | 'b',
+): number => {
+  const weightColorScale = GRID_CONFIG.weightColorScale;
+
+  if (weightValue > 0) {
+    return (
+      ((weightColorScale.highValueMax[channel] - 255) /
+        weightColorScale.capValue) *
+        Math.min(weightValue, weightColorScale.capValue) +
+      255
+    );
+  } else {
+    return (
+      ((weightColorScale.lowValueMax[channel] - 255) /
+        -weightColorScale.capValue) *
+        Math.max(weightValue, -weightColorScale.capValue) +
+      255
+    );
+  }
+};
+
+export const shuffleArray = (array: unknown[]): void => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [array[i], array[j]] = [array[j], array[i]];
+  }
 };

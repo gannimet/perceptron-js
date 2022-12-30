@@ -10,11 +10,10 @@ export class Perceptron {
   iterations: PerceptronIteration[] = [];
 
   constructor(
-    private bias: number,
-    private w0: number,
-    private w1: number,
-    private learningRate: number,
-    private activationFn: (s: number) => NeuronActivation,
+    public bias: number,
+    public w0: number,
+    public w1: number,
+    public activationFn: (s: number) => NeuronActivation,
   ) {}
 
   startNewIteration() {
@@ -58,7 +57,16 @@ export class Perceptron {
     };
   }
 
-  train(point: Point, pointClass: PointClass): PerceptronIterationRow {
+  reset() {
+    this.bias = this.w0 = this.w1 = 0;
+    this.iterations = [];
+  }
+
+  train(
+    point: Point,
+    pointClass: PointClass,
+    learningRate: number,
+  ): PerceptronIterationRow {
     const currentIteration = this.getCurrentIteration();
 
     if (!currentIteration) {
@@ -72,9 +80,9 @@ export class Perceptron {
     const weightedSum = biasBefore + w0Before * point.x + w1Before * point.y;
     const activation = this.activationFn(weightedSum);
     const error: TrainingError = (desired - activation) as TrainingError;
-    const deltaBias = this.learningRate * error;
-    const deltaW0 = this.learningRate * error * point.x;
-    const deltaW1 = this.learningRate * error * point.y;
+    const deltaBias = learningRate * error;
+    const deltaW0 = learningRate * error * point.x;
+    const deltaW1 = learningRate * error * point.y;
 
     this.bias += deltaBias;
     this.w0 += deltaW0;
@@ -89,7 +97,7 @@ export class Perceptron {
       weightedSum,
       activation,
       error,
-      this.learningRate,
+      learningRate,
       deltaBias,
       deltaW0,
       deltaW1,

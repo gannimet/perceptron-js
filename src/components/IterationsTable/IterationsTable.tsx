@@ -1,5 +1,6 @@
 import React from 'react';
 import { PerceptronIteration } from '../../model/Perceptron';
+import { getWeightColorValue, rounded } from '../../util/math.utils';
 import './IterationsTable.scss';
 import { IterationsTableProps } from './IterationsTable.types';
 
@@ -15,7 +16,7 @@ const IterationsTable = React.memo<IterationsTableProps>(({ iterations }) => {
           <th>x1</th>
           <th>d</th>
           <th>s</th>
-          <th>a</th>
+          <th>y</th>
           <th>e</th>
           <th>Δb</th>
           <th>Δw0</th>
@@ -25,14 +26,32 @@ const IterationsTable = React.memo<IterationsTableProps>(({ iterations }) => {
     );
   };
 
+  const getWeightCSS = (value: number): React.CSSProperties => {
+    return {
+      backgroundColor: `rgb(${getWeightColorValue(
+        value,
+        'r',
+      )}, ${getWeightColorValue(value, 'g')}, ${getWeightColorValue(
+        value,
+        'b',
+      )})`,
+    };
+  };
+
   const renderIterationBody = (iteration: PerceptronIteration) => {
     return (
       <tbody key={iteration.id} className="iterations-table__body">
         {iteration.iterationRows.map((iterationRow) => (
           <tr key={iterationRow.id}>
-            <td>{iterationRow.bias}</td>
-            <td>{iterationRow.w0}</td>
-            <td>{iterationRow.w1}</td>
+            <td style={getWeightCSS(iterationRow.bias)}>
+              {rounded(iterationRow.bias)}
+            </td>
+            <td style={getWeightCSS(iterationRow.w0)}>
+              {rounded(iterationRow.w0)}
+            </td>
+            <td style={getWeightCSS(iterationRow.w1)}>
+              {rounded(iterationRow.w1)}
+            </td>
             <td
               className={`input-cell ${
                 iterationRow.desired === 0 ? 'input-cell--a' : 'input-cell--b'
@@ -48,7 +67,7 @@ const IterationsTable = React.memo<IterationsTableProps>(({ iterations }) => {
               {iterationRow.point.y}
             </td>
             <td>{iterationRow.desired}</td>
-            <td>{iterationRow.weightedSum}</td>
+            <td>{rounded(iterationRow.weightedSum)}</td>
             <td>{iterationRow.activation}</td>
             <td
               className={`error-cell ${
@@ -59,9 +78,9 @@ const IterationsTable = React.memo<IterationsTableProps>(({ iterations }) => {
             >
               {iterationRow.error}
             </td>
-            <td>{iterationRow.deltaBias}</td>
-            <td>{iterationRow.deltaW0}</td>
-            <td>{iterationRow.deltaW1}</td>
+            <td>{rounded(iterationRow.deltaBias)}</td>
+            <td>{rounded(iterationRow.deltaW0)}</td>
+            <td>{rounded(iterationRow.deltaW1)}</td>
           </tr>
         ))}
       </tbody>
