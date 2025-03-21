@@ -115,6 +115,30 @@ function App() {
     setShouldRandomizeOrder(!shouldRandomizeOrder);
   };
 
+  const exportClicked = () => {
+    const allBiases = iterations.reduce((prev, currIteration) => {
+      const biases = currIteration.iterationRows.map((row) => row.bias);
+
+      return [...prev, ...biases];
+    }, [] as number[]);
+
+    const allW0s = iterations.reduce((prev, currIteration) => {
+      const w0s = currIteration.iterationRows.map((row) => row.w0);
+
+      return [...prev, ...w0s];
+    }, [] as number[]);
+
+    const allW1s = iterations.reduce((prev, currIteration) => {
+      const w1s = currIteration.iterationRows.map((row) => row.w1);
+
+      return [...prev, ...w1s];
+    }, [] as number[]);
+
+    console.log('biases:', allBiases);
+    console.log('w0s:', allW0s);
+    console.log('w1s:', allW1s);
+  };
+
   return (
     <div className="perceptron-app">
       <div className="perceptron-app__content">
@@ -130,6 +154,8 @@ function App() {
               >
                 Next point: {activePointClass}
               </div>
+
+              <button onClick={exportClicked}>Export</button>
             </div>
 
             <ScatterPlot
@@ -168,6 +194,7 @@ function App() {
               <label>
                 <span>b:</span>
                 <input
+                  type="number"
                   onChange={initialBiasChanged}
                   disabled={iterations.length > 0}
                 />
@@ -176,6 +203,7 @@ function App() {
               <label>
                 <span>w0:</span>
                 <input
+                  type="number"
                   onChange={initialW0Changed}
                   disabled={iterations.length > 0}
                 />
@@ -184,6 +212,7 @@ function App() {
               <label>
                 <span>w1:</span>
                 <input
+                  type="number"
                   onChange={initialW1Changed}
                   disabled={iterations.length > 0}
                 />

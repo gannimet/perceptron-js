@@ -14,8 +14,8 @@ const IterationsTable = React.memo<IterationsTableProps>(({ iterations }) => {
           <th>w1</th>
           <th>x0</th>
           <th>x1</th>
-          <th>d</th>
-          <th>s</th>
+          <th>z</th>
+          <th>a</th>
           <th>y</th>
           <th>e</th>
           <th>Δb</th>
@@ -66,9 +66,9 @@ const IterationsTable = React.memo<IterationsTableProps>(({ iterations }) => {
             >
               {iterationRow.point.y}
             </td>
-            <td>{iterationRow.desired}</td>
             <td>{rounded(iterationRow.weightedSum)}</td>
             <td>{iterationRow.activation}</td>
+            <td>{iterationRow.desired}</td>
             <td
               className={`error-cell ${
                 iterationRow.error === 0
