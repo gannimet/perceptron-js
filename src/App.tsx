@@ -4,7 +4,7 @@ import IterationsTable from './components/IterationsTable/IterationsTable';
 import ScatterPlot from './components/ScatterPlot/ScatterPlot';
 import { Perceptron, PerceptronIteration } from './model/Perceptron';
 import { LinearFunctionParams, Point, PointClass } from './model/types';
-import { heaviside, rounded, shuffleArray } from './util/math.utils';
+import { heaviside, rounded } from './util/math.utils';
 
 function App() {
   const [classAPoints, setClassAPoints] = useState<Point[]>([]);
@@ -18,8 +18,6 @@ function App() {
   const [initialBias, setInitialBias] = useState<number>(0);
   const [initialW0, setInitialW0] = useState<number>(0);
   const [initialW1, setInitialW1] = useState<number>(0);
-  const [shouldRandomizeOrder, setShouldRandomizeOrder] =
-    useState<boolean>(true);
 
   const perceptron = useMemo(() => {
     return new Perceptron(initialBias, initialW0, initialW1, heaviside);
@@ -27,18 +25,7 @@ function App() {
 
   const trainButtonClicked = () => {
     perceptron.startNewIteration();
-    const allPoints = [
-      ...classAPoints.map((point) => ['A', point]),
-      ...classBPoints.map((point) => ['B', point]),
-    ] as [PointClass, Point][];
-
-    if (shouldRandomizeOrder) {
-      shuffleArray(allPoints);
-    }
-
-    allPoints.forEach(([pointClass, point]) => {
-      perceptron.train(point, pointClass, learningRate);
-    });
+    perceptron.train(classAPoints, classBPoints, learningRate);
 
     setIterations(perceptron.iterations);
     setFunctionParams(perceptron.getCurrentLinearFunctionParamsGuess());
@@ -111,34 +98,6 @@ function App() {
     setClassBPoints([]);
   };
 
-  const randomizeCheckboxChanged = () => {
-    setShouldRandomizeOrder(!shouldRandomizeOrder);
-  };
-
-  const exportClicked = () => {
-    const allBiases = iterations.reduce((prev, currIteration) => {
-      const biases = currIteration.iterationRows.map((row) => row.bias);
-
-      return [...prev, ...biases];
-    }, [] as number[]);
-
-    const allW0s = iterations.reduce((prev, currIteration) => {
-      const w0s = currIteration.iterationRows.map((row) => row.w0);
-
-      return [...prev, ...w0s];
-    }, [] as number[]);
-
-    const allW1s = iterations.reduce((prev, currIteration) => {
-      const w1s = currIteration.iterationRows.map((row) => row.w1);
-
-      return [...prev, ...w1s];
-    }, [] as number[]);
-
-    console.log('biases:', allBiases);
-    console.log('w0s:', allW0s);
-    console.log('w1s:', allW1s);
-  };
-
   return (
     <div className="perceptron-app">
       <div className="perceptron-app__content">
@@ -154,8 +113,6 @@ function App() {
               >
                 Next point: {activePointClass}
               </div>
-
-              <button onClick={exportClicked}>Export</button>
             </div>
 
             <ScatterPlot
@@ -175,17 +132,6 @@ function App() {
               Reset everything
             </button>
           </div>
-
-          <section className="perceptron-app__content__plot__randomize-control">
-            <label>
-              <input
-                type="checkbox"
-                checked={shouldRandomizeOrder}
-                onChange={randomizeCheckboxChanged}
-              />
-              Randomize point evaluation order
-            </label>
-          </section>
 
           <section className="perceptron-app__content__plot__weight-controls">
             <label>Initial weights:</label>

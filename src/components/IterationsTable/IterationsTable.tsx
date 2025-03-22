@@ -39,10 +39,15 @@ const IterationsTable = React.memo<IterationsTableProps>(({ iterations }) => {
   };
 
   const renderIterationBody = (iteration: PerceptronIteration) => {
+    const { iterationRows, summaryRow } = iteration;
+
     return (
       <tbody key={iteration.id} className="iterations-table__body">
-        {iteration.iterationRows.map((iterationRow) => (
-          <tr key={iterationRow.id}>
+        {iterationRows.map((iterationRow) => (
+          <tr
+            key={iterationRow.id}
+            className="iterations-table__body__iteration-row"
+          >
             <td style={getWeightCSS(iterationRow.bias)}>
               {rounded(iterationRow.bias)}
             </td>
@@ -83,6 +88,20 @@ const IterationsTable = React.memo<IterationsTableProps>(({ iterations }) => {
             <td>{rounded(iterationRow.deltaW1)}</td>
           </tr>
         ))}
+
+        {summaryRow && (
+          <tr className="iterations-table__body__iteration-summary-row">
+            <td>{rounded(summaryRow.bias)}</td>
+            <td>{rounded(summaryRow.w0)}</td>
+            <td>{rounded(summaryRow.w1)}</td>
+            <td className="average-cell" colSpan={6}>
+              Average:
+            </td>
+            <td>{rounded(summaryRow.deltaBias)}</td>
+            <td>{rounded(summaryRow.deltaW0)}</td>
+            <td>{rounded(summaryRow.deltaW1)}</td>
+          </tr>
+        )}
       </tbody>
     );
   };

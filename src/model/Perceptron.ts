@@ -62,56 +62,80 @@ export class Perceptron {
     this.iterations = [];
   }
 
-  train(
-    point: Point,
-    pointClass: PointClass,
-    learningRate: number,
-  ): PerceptronIterationRow {
+  train(classAPoints: Point[], classBPoints: Point[], learningRate: number) {
     const currentIteration = this.getCurrentIteration();
 
     if (!currentIteration) {
       throw new Error('No current iteration');
     }
 
-    const biasBefore = this.bias;
-    const w0Before = this.w0;
-    const w1Before = this.w1;
-    const desired = pointClass === 'A' ? 0 : 1;
-    const weightedSum = biasBefore + w0Before * point.x + w1Before * point.y;
-    const activation = this.activationFn(weightedSum);
-    const error: TrainingError = (desired - activation) as TrainingError;
-    const deltaBias = learningRate * error;
-    const deltaW0 = learningRate * error * point.x;
-    const deltaW1 = learningRate * error * point.y;
+    const totalNumPoints = classAPoints.length + classBPoints.length;
+    const classifiedPoints: { [key in PointClass]: Point[] } = {
+      A: classAPoints,
+      B: classBPoints,
+    };
 
-    this.bias += deltaBias;
-    this.w0 += deltaW0;
-    this.w1 += deltaW1;
+    let deltaBias = 0;
+    let deltaW0 = 0;
+    let deltaW1 = 0;
 
-    const newIterationRow = new PerceptronIterationRow(
-      biasBefore,
-      w0Before,
-      w1Before,
-      point,
-      desired,
-      weightedSum,
-      activation,
-      error,
-      learningRate,
-      deltaBias,
-      deltaW0,
-      deltaW1,
-    );
+    Object.keys(classifiedPoints).forEach((pointClass) => {
+      classifiedPoints[pointClass as PointClass].forEach((point) => {
+        const desired = pointClass === 'A' ? 0 : 1;
+        const weightedSum = this.bias + this.w0 * point.x + this.w1 * point.y;
+        const activation = this.activationFn(weightedSum);
+        const error = (desired - activation) as TrainingError;
 
-    currentIteration.addRow(newIterationRow);
+        const pointDeltaBias = learningRate * error;
+        const pointDeltaW0 = learningRate * error * point.x;
+        const pointDeltaW1 = learningRate * error * point.y;
 
-    return newIterationRow;
+        deltaBias += pointDeltaBias;
+        deltaW0 += pointDeltaW0;
+        deltaW1 += pointDeltaW1;
+
+        const newIterationRow = new PerceptronIterationRow(
+          this.bias,
+          this.w0,
+          this.w1,
+          point,
+          desired,
+          weightedSum,
+          activation,
+          error,
+          learningRate,
+          pointDeltaBias,
+          pointDeltaW0,
+          pointDeltaW1,
+        );
+
+        currentIteration.addRow(newIterationRow);
+      });
+    });
+
+    const averageDeltaBias = deltaBias / totalNumPoints;
+    const averageDeltaW0 = deltaW0 / totalNumPoints;
+    const averageDeltaW1 = deltaW1 / totalNumPoints;
+
+    this.bias += averageDeltaBias;
+    this.w0 += averageDeltaW0;
+    this.w1 += averageDeltaW1;
+
+    currentIteration.summaryRow = {
+      bias: this.bias,
+      w0: this.w0,
+      w1: this.w1,
+      deltaBias: averageDeltaBias,
+      deltaW0: averageDeltaW0,
+      deltaW1: averageDeltaW1,
+    };
   }
 }
 
 export class PerceptronIteration {
   id: string;
   iterationRows: PerceptronIterationRow[] = [];
+  summaryRow?: PerceptronSummaryRow;
 
   constructor() {
     this.id = crypto.randomUUID();
@@ -142,3 +166,12 @@ export class PerceptronIterationRow {
     this.id = crypto.randomUUID();
   }
 }
+
+export type PerceptronSummaryRow = {
+  bias: number;
+  w0: number;
+  w1: number;
+  deltaBias: number;
+  deltaW0: number;
+  deltaW1: number;
+};

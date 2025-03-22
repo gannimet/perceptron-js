@@ -19,30 +19,39 @@
   &__body {
     border-bottom: 1px solid black;
 
-    tr {
-      td {
-        text-align: center;
-        padding: 4px;
+    td {
+      text-align: center;
+      padding: 4px;
+    }
 
-        &.error-cell {
-          &--green {
-            background-color: greenyellow;
-          }
-
-          &--red {
-            background-color: lightcoral;
-          }
+    &__iteration-row {
+      .error-cell {
+        &--green {
+          background-color: greenyellow;
         }
 
-        &.input-cell {
-          &--a {
-            background-color: rgb(254, 196, 197);
-          }
-
-          &--b {
-            background-color: rgb(178, 220, 255);
-          }
+        &--red {
+          background-color: lightcoral;
         }
+      }
+
+      .input-cell {
+        &--a {
+          background-color: rgb(254, 196, 197);
+        }
+
+        &--b {
+          background-color: rgb(178, 220, 255);
+        }
+      }
+    }
+
+    &__iteration-summary-row {
+      background-color: #006fe6;
+      color: white;
+
+      .average-cell {
+        text-align: right;
       }
     }
   }
